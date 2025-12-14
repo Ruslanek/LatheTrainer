@@ -9,17 +9,17 @@ namespace LatheTrainer.Core
             switch (type)
             {
                 case MaterialType.Steel:
-                    return new Color(0.7f, 0.7f, 0.7f); // серый
+                    return new Color(0.7f, 0.7f, 0.7f); // szary
                 case MaterialType.Aluminium:
-                    return new Color(0.85f, 0.85f, 0.9f); // светлый
+                    return new Color(0.85f, 0.85f, 0.9f); // jasny
                 case MaterialType.Brass:
-                    return new Color(0.9f, 0.8f, 0.2f); // жёлтый
+                    return new Color(0.9f, 0.8f, 0.2f); // żółty
                 default:
                     return Color.white;
             }
         }
 
-        // На будущее: справочные скорости резания и т.п.
+        // Na przyszłość: prędkości skrawania, wartości referencyjne itp.
         public static float GetRecommendedCuttingSpeed(MaterialType type)
         {
             switch (type)

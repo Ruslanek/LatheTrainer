@@ -4,32 +4,35 @@ namespace LatheTrainer.Core
 {
     public class ToolPositionController : MonoBehaviour
     {
-        [Header("Текущие координаты резца (мм)")]
-        public float XMm = 50f;   // радиальное направление
-        public float ZMm = 150f;  // вдоль заготовки
+        [Header("Aktualne współrzędne noża (mm)")]
+        public float XMm = 50f;   // kierunek radialny
+        public float ZMm = 150f;  // wzdłuż detalu
 
-        [Header("Скорость перемещения (мм/с)")]
+        [Header("Prędkość posuwu (mm/s)")]
         public float FeedRateMmPerSec = 50f;
 
-        [Header("Ограничения станка (мм)")]
+        [Header("Ograniczenia maszyny (mm)")]
         public LatheLimits Limits = new LatheLimits(
-            xMinMm: 0f,    // ось шпинделя
-            xMaxMm: 120f,  // максимально вверх
-            zMinMm: 0f,    // ближе к патрону
-            zMaxMm: 300f   // вправо вдоль заготовки
+            xMinMm: 0f,    // oś wrzeciona
+            xMaxMm: 120f,  // maksymalnie w górę
+            zMinMm: 0f,    // bliżej uchwytu
+            zMaxMm: 300f   // w prawo wzdłuż detalu
         );
 
-        private const float Scale = 0.01f; // 100 мм = 1 юнит в Unity
+        public void SetInputEnabled(bool enabled) => _inputEnabled = enabled;
+
+        private const float Scale = 0.01f; // 100 mm = 1 jednostka w Unity
 
         private void Start()
         {
-            // сразу выставляем позицию по текущим X/Z
+            // od razu ustawiamy pozycję według bieżących X/Z
             UpdateWorldPosition();
         }
 
         private void Update()
         {
-            HandleKeyboardInput();
+            if (_inputEnabled) { 
+                HandleKeyboardInput();}
             ClampToLimits();
             UpdateWorldPosition();
         }
@@ -39,11 +42,11 @@ namespace LatheTrainer.Core
             float dx = 0f;
             float dz = 0f;
 
-            // X — вверх/вниз
+            // X — góra/dół
             if (Input.GetKey(KeyCode.UpArrow)) dx += 1f;
             if (Input.GetKey(KeyCode.DownArrow)) dx -= 1f;
 
-            // Z — вдоль заготовки
+            // Z — wzdłuż detalu
             if (Input.GetKey(KeyCode.RightArrow)) dz += 1f;
             if (Input.GetKey(KeyCode.LeftArrow)) dz -= 1f;
 
@@ -64,7 +67,7 @@ namespace LatheTrainer.Core
 
         private void UpdateWorldPosition()
         {
-            // Z → по горизонтали, X → по вертикали
+            // Z → poziomo, X → pionowo
             Vector3 worldPos = new Vector3(
                 ZMm * Scale,
                 XMm * Scale,
@@ -73,5 +76,22 @@ namespace LatheTrainer.Core
 
             transform.localPosition = worldPos;
         }
+
+
+        public void MoveToMm(float xMm, float zMm, bool instant = true)
+        {
+            XMm = xMm;
+            ZMm = zMm;
+            ClampToLimits();
+            UpdateWorldPosition();
+        }
+
+        public void MoveToPark(bool instant = true)
+        {
+            // bezpieczne parkowanie: w dół i w prawo (dostosuj do swoich potrzeb)
+            MoveToMm(xMm: Limits.XMinMm, zMm: Limits.ZMaxMm, instant: true);
+        }
+
+        private bool _inputEnabled = true;
     }
 }

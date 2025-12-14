@@ -1,31 +1,31 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // если используешь TextMeshPro
+using TMPro; 
 
 namespace LatheTrainer.UI
 {
     public class SpindleFeedPanel : MonoBehaviour
     {
-        [Header("Индикаторы")]
+        [Header("Wskaźniki")]
         public TMP_Text spindleDisplay;
         public TMP_Text feedDisplay;
 
-        [Header("Крутилки (изображения)")]
+        [Header("Pokrętła (obrazy)")]
         public RectTransform spindleKnob;
         public RectTransform feedKnob;
 
-        [Header("Диапазоны значений")]
+        [Header("Zakresy wartości")]
         public int spindleMinRpm = 100;
         public int spindleMaxRpm = 2000;
 
-        public float feedMin = 0.05f;   // мм/об
+        public float feedMin = 0.05f;   // mm na obrót
         public float feedMax = 0.5f;
 
-        [Header("Внутреннее состояние (0..1)")]
-        [Range(0f, 1f)] public float spindleValue = 0.3f; // позиция ручки
+        [Header("Stan wewnętrzny (0..1)")]
+        [Range(0f, 1f)] public float spindleValue = 0.3f; // pozycja pokrętła
         [Range(0f, 1f)] public float feedValue = 0.3f;
 
-        [Header("Угол поворота ручки")]
+        [Header("Kąt obrotu pokrętła")]
         public float minAngle = -135f;
         public float maxAngle = 135f;
 
@@ -36,8 +36,8 @@ namespace LatheTrainer.UI
 
         private void Update()
         {
-            // ВРЕМЕННОЕ управление с клавиатуры,
-            // потом заменим на управление мышью:
+            // TYMCZASOWE sterowanie z klawiatury,
+            // później zastąpimy sterowaniem myszą:
             if (Input.GetKey(KeyCode.Q))
                 spindleValue = Mathf.Clamp01(spindleValue + Time.deltaTime * 0.2f);
             if (Input.GetKey(KeyCode.A))
@@ -53,18 +53,18 @@ namespace LatheTrainer.UI
 
         private void UpdateUI()
         {
-            // вычисляем реальные значения
+            // obliczamy rzeczywiste wartości
             int rpm = Mathf.RoundToInt(Mathf.Lerp(spindleMinRpm, spindleMaxRpm, spindleValue));
             float feed = Mathf.Lerp(feedMin, feedMax, feedValue);
 
-            // обновляем текстовые индикаторы
+            // aktualizujemy wskaźniki tekstowe
             if (spindleDisplay != null)
-                spindleDisplay.text = rpm.ToString("0000");  // 4 цифры
+                spindleDisplay.text = rpm.ToString("0000");  // 4 cyfry
 
             if (feedDisplay != null)
-                feedDisplay.text = feed.ToString("0.00");    // 0.00 мм/об
+                feedDisplay.text = feed.ToString("0.00");    // 0.00 mm/obr
 
-            // поворачиваем ручки
+            // obracamy pokrętła
             float spindleAngle = Mathf.Lerp(minAngle, maxAngle, spindleValue);
             float feedAngle = Mathf.Lerp(minAngle, maxAngle, feedValue);
 
@@ -75,7 +75,7 @@ namespace LatheTrainer.UI
                 feedKnob.localEulerAngles = new Vector3(0f, 0f, feedAngle);
         }
 
-        // На будущее: сюда можно добавить методы GetCurrentRpm(), GetCurrentFeed()
+        // Na przyszłość: tutaj można dodać metody GetCurrentRpm(), GetCurrentFeed()
         public int GetCurrentRpm() => Mathf.RoundToInt(Mathf.Lerp(spindleMinRpm, spindleMaxRpm, spindleValue));
         public float GetCurrentFeed() => Mathf.Lerp(feedMin, feedMax, feedValue);
     }

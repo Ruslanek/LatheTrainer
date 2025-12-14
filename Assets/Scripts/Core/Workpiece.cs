@@ -1,8 +1,8 @@
 ﻿namespace LatheTrainer.Core
 {
     /// <summary>
-    /// Заготовка (исходный цилиндр). 
-    /// Позже сюда можно добавить профиль по длине.
+    /// Przedmiot obrabiany (walec początkowy).
+    /// W przyszłości można dodać profil wzdłuż długości.
     /// </summary>
     public class Workpiece
     {

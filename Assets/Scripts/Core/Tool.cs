@@ -4,10 +4,10 @@ namespace LatheTrainer.Core
 {
     public enum ToolType
     {
-        ExternalTurning,   // продольное точение
-        Facing,            // подрезание торца
-        Parting,           // отрезной
-        Grooving           // канавочный, опционально
+        ExternalTurning,   // toczenie wzdłużne
+        Facing,            // planowanie czoła
+        Parting,           // toczenie odcinające
+        Grooving           // toczenie rowków (opcjonalnie)
     }
 
     public class Tool
@@ -15,13 +15,13 @@ namespace LatheTrainer.Core
         public string Name { get; private set; }
         public ToolType Type { get; private set; }
 
-        /// <summary>Вылет державки из резцедержателя (мм).</summary>
+        /// <summary>Wysięg oprawki z imaka narzędziowego (mm).</summary>
         public float OverhangMm { get; private set; }
 
-        /// <summary>Радиус вершины пластины (мм).</summary>
+        /// <summary>Promień wierzchołka płytki skrawającej (mm).</summary>
         public float NoseRadiusMm { get; private set; }
 
-        /// <summary>Ширина режущей кромки (мм). Для отрезного/канавочного.</summary>
+        /// <summary>Szerokość krawędzi skrawającej (mm). Dotyczy toczenia odcinającego i rowkowania.</summary>
         public float WidthMm { get; private set; }
 
         public Tool(string name, ToolType type,

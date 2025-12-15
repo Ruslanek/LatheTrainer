@@ -14,7 +14,11 @@ namespace LatheTrainer.Machine
             Clamping,
             Clamped,
             Spinning
+
+
         }
+
+      
 
         [Header("DEBUG")]
         [SerializeField] private ChuckState debugState;
@@ -42,7 +46,7 @@ namespace LatheTrainer.Machine
         [SerializeField] private float commandedRpm;
         [SerializeField] private float currentRpm;
 
-        public enum SpinDirection { CW = -1, CCW = 1 }   // CW/CCW można zamienić miejscami, jeśli zajdzie taka potrzeba
+        public enum SpinDirection { CW = 1, CCW = -1,  }   // CW/CCW można zamienić miejscami, jeśli zajdzie taka potrzeba
         [SerializeField] private SpinDirection spinDirection = SpinDirection.CW;
 
         [Header("Spin Phases")]
@@ -81,6 +85,12 @@ namespace LatheTrainer.Machine
         private float _chuckRadiusLocal; // promień uchwytu w lokalnej przestrzeni JawSpace
 
 
+        public float CurrentRpm => currentRpm;
+        public float CommandedRpm => commandedRpm;
+
+
+
+
 
 
 
@@ -108,6 +118,20 @@ namespace LatheTrainer.Machine
 
         [SerializeField] private float markTiltXMax = 90f; // 90 = całkowicie „krawędzią”
 
+        [Header("Spindle enable (START/STOP)")]
+        [SerializeField] private bool spindleEnabled; // włączany przyciskiem START
+        public bool SpindleEnabled => spindleEnabled;
+
+        public bool IsClamped => (State == ChuckState.Clamped || State == ChuckState.Spinning);
+
+   
+   
+
+
+
+        [Header("Default RPM on start")]
+        [SerializeField] private float defaultCommandedRpm = 250f;
+
         void Awake()
         {
            //Debug.Log("ChuckSpindleVisual: Awake");
@@ -123,10 +147,16 @@ namespace LatheTrainer.Machine
         void Update()
         {
             // 1) zezwolenie na uruchomienie obrotów
-            bool canSpin = (State == ChuckState.Clamped || State == ChuckState.Spinning);
+           // bool canSpin = (State == ChuckState.Clamped || State == ChuckState.Spinning);
 
             // commandedRpm — nie zmieniamy! To „żądanie” użytkownika
+           // float targetRpm = canSpin ? commandedRpm : 0f;
+
+
+            bool canSpin = spindleEnabled && (State == ChuckState.Clamped || State == ChuckState.Spinning);
             float targetRpm = canSpin ? commandedRpm : 0f;
+
+
 
             // podczas zaciskania zawsze 0
             if (State == ChuckState.Clamping)
@@ -723,6 +753,9 @@ namespace LatheTrainer.Machine
         void Start()
         {
             TryAutoClampOnStart();
+
+            if (commandedRpm <= 0.01f)
+                commandedRpm = defaultCommandedRpm;
         }
 
         private void TryAutoClampOnStart()
@@ -748,6 +781,20 @@ namespace LatheTrainer.Machine
             //  WAŻNE: używamy TEJ SAMEJ logiki co przy przycisku OK
             SelectWorkpieceByDiameter(diameterWorld);
         }
+
+        public bool TryStartSpindle()
+        {
+            if (!IsClamped) return false;   // nie można, dopóki detal nie jest zaciśnięty
+            spindleEnabled = true;
+            return true;
+        }
+
+        public void StopSpindle()
+        {
+            spindleEnabled = false;
+        }
+
+
 
 
 

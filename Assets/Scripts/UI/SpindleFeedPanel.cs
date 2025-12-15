@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro; 
+using TMPro;
+using UnityEngine.EventSystems;
 
 namespace LatheTrainer.UI
 {
@@ -15,7 +16,7 @@ namespace LatheTrainer.UI
         public RectTransform feedKnob;
 
         [Header("Zakresy wartości")]
-        public int spindleMinRpm = 100;
+        public int spindleMinRpm = 0;
         public int spindleMaxRpm = 2000;
 
         public float feedMin = 0.05f;   // mm na obrót
@@ -28,6 +29,12 @@ namespace LatheTrainer.UI
         [Header("Kąt obrotu pokrętła")]
         public float minAngle = -135f;
         public float maxAngle = 135f;
+
+        [Header("Machine link")]
+        public LatheTrainer.Machine.ChuckSpindleVisual spindleVisual;
+
+        private int _lastRpm = -1;
+        private float _lastFeed = -1f;
 
         private void Start()
         {
@@ -73,6 +80,13 @@ namespace LatheTrainer.UI
 
             if (feedKnob != null)
                 feedKnob.localEulerAngles = new Vector3(0f, 0f, feedAngle);
+
+            // wysyłamy wartość RPM do maszyny tylko wtedy, gdy faktycznie się zmieniła
+            if (spindleVisual != null && rpm != _lastRpm)
+            {
+                spindleVisual.SetCommandedRpm(rpm);
+                _lastRpm = rpm;
+            }
         }
 
         // Na przyszłość: tutaj można dodać metody GetCurrentRpm(), GetCurrentFeed()

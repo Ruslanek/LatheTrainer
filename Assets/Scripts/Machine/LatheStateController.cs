@@ -53,5 +53,23 @@ namespace LatheTrainer.Machine
             if (workpieceController != null)
                 workpieceController.ApplyFromMm(material, diameterMm, lengthMm);
         }
+
+        public bool PressStart()
+        {
+            if (spindleVisual == null) return false;
+            return spindleVisual.TryStartSpindle();
+        }
+
+        public void PressStop()
+        {
+            if (spindleVisual == null) return;
+            spindleVisual.StopSpindle();
+        }
+
+        public void PressReverseToggle(bool reverseOn)
+        {
+            if (spindleVisual == null) return;
+            spindleVisual.SetSpinDirection(reverseOn);
+        }
     }
 }

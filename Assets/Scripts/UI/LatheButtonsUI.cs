@@ -230,4 +230,12 @@ public class LatheButtonsUI : MonoBehaviour
             startLamp.SetOn(false);
         }
     }
+
+    public void PressStopExternal()
+    {
+        OnStop(); // wywołuje spindle.StopSpindle() oraz ApplyLamps()
+
+    }
+
+    
 }

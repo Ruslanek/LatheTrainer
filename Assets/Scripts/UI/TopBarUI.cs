@@ -43,7 +43,7 @@ namespace LatheTrainer.UI
         private void Open(GameObject modal)
         {
             if (lathe != null)
-                lathe.EnterSafeState();
+               // lathe.EnterSafeState();
 
             if (modalOverlay) modalOverlay.SetActive(true);
 
@@ -52,6 +52,11 @@ namespace LatheTrainer.UI
             if (toolModal) toolModal.SetActive(false);
 
             if (modal) modal.SetActive(true);
+        }
+
+        private void Start()
+        {
+            CloseAll();
         }
     }
 }

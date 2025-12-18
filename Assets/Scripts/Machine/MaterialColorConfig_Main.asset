@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8324520b0c7894196a708a4bb98af6, type: 3}
   m_Name: MaterialColorConfig_Main
   m_EditorClassIdentifier: Assembly-CSharp::MaterialColorConfig
-  steelColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+  steelColor: {r: 0.5660378, g: 0.37950924, b: 0.22160912, a: 1}
   aluminiumColor: {r: 0.85, g: 0.85, b: 0.9, a: 1}
   brassColor: {r: 0.9, g: 0.8, b: 0.3, a: 1}

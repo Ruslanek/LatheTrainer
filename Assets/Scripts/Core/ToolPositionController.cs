@@ -5,58 +5,90 @@ namespace LatheTrainer.Core
     public class ToolPositionController : MonoBehaviour
     {
         [Header("Aktualne współrzędne noża (mm)")]
-        public float XMm = 50f;   // kierunek radialny
-        public float ZMm = 150f;  // wzdłuż detalu
-
-        [Header("Prędkość posuwu (mm/s)")]
-        public float FeedRateMmPerSec = 50f;
+        public float XMm = 50f;
+        public float ZMm = 150f;
 
         [Header("Ograniczenia maszyny (mm)")]
         public LatheLimits Limits = new LatheLimits(
-            xMinMm: 0f,    // oś wrzeciona
-            xMaxMm: 120f,  // maksymalnie w górę
-            zMinMm: 0f,    // bliżej uchwytu
-            zMaxMm: 300f   // w prawo wzdłuż detalu
+            xMinMm: -400f,
+            xMaxMm: 120f,
+            zMinMm: -400f,
+            zMaxMm: 700f
         );
+
+        private float _dirX, _dirZ, _speed;
+        //private bool _moving;
 
         public void SetInputEnabled(bool enabled) => _inputEnabled = enabled;
 
-        private const float Scale = 0.01f; // 100 mm = 1 jednostka w Unity
+        private const float Scale = 0.01f;
 
-        private void Start()
-        {
-            // od razu ustawiamy pozycję według bieżących X/Z
-            UpdateWorldPosition();
-        }
+        // Ruch ciągły (przytrzymanie przycisku)
+        private bool _moving;
+        private Vector2 _moveDir;     // (dx, dz) -1..1
+        private float _speedMmPerSec; // mm/s
+
+        private bool _inputEnabled = true;
+
+        private void Start() => UpdateWorldPosition();
 
         private void Update()
         {
-            if (_inputEnabled) { 
-                HandleKeyboardInput();}
-            ClampToLimits();
-            UpdateWorldPosition();
-        }
-
-        private void HandleKeyboardInput()
-        {
-            float dx = 0f;
-            float dz = 0f;
-
-            // X — góra/dół
-            if (Input.GetKey(KeyCode.UpArrow)) dx += 1f;
-            if (Input.GetKey(KeyCode.DownArrow)) dx -= 1f;
-
-            // Z — wzdłuż detalu
-            if (Input.GetKey(KeyCode.RightArrow)) dz += 1f;
-            if (Input.GetKey(KeyCode.LeftArrow)) dz -= 1f;
-
-            if (dx == 0f && dz == 0f)
-                return;
 
             float dt = Time.deltaTime;
 
-            XMm += dx * FeedRateMmPerSec * dt;
-            ZMm += dz * FeedRateMmPerSec * dt;
+            if (_moving)
+            {
+                XMm += _dirX * _speed * dt;
+                ZMm += _dirZ * _speed * dt;
+            }
+
+            if (_inputEnabled)
+            {
+                //  HandleKeyboardInput(); // tylko do testów / sterowanie ręczne
+            }
+
+            ClampToLimits();
+            UpdateWorldPosition();
+
+            /*
+            if (_inputEnabled && _moving)
+            {
+                float dt = Time.deltaTime;
+                XMm += _moveDir.x * _speedMmPerSec * dt;
+                ZMm += _moveDir.y * _speedMmPerSec * dt;
+
+                ClampToLimits();
+                UpdateWorldPosition();
+            }*/
+        }
+
+        public void StartContinuousMove(float dirX, float dirZ, float speedMmPerSec)
+        {
+            _dirX = dirX;
+            _dirZ = dirZ;
+            _speed = speedMmPerSec;
+            _moving = true;
+
+            /*
+            _moveDir = new Vector2(dirX, dirZ);
+            _speedMmPerSec = Mathf.Max(0f, speedMmPerSec);
+            _moving = (_speedMmPerSec > 0.0001f) && (_moveDir.sqrMagnitude > 0.0001f);*/
+        }
+
+        public void StopMove()
+        {
+            _moving = false;
+            _dirX = _dirZ = _speed = 0f;
+        }
+
+
+        public void StepMove(float deltaXmm, float deltaZmm)
+        {
+            XMm += deltaXmm;
+            ZMm += deltaZmm;
+            ClampToLimits();
+            UpdateWorldPosition();
         }
 
         private void ClampToLimits()
@@ -67,16 +99,13 @@ namespace LatheTrainer.Core
 
         private void UpdateWorldPosition()
         {
-            // Z → poziomo, X → pionowo
             Vector3 worldPos = new Vector3(
                 ZMm * Scale,
                 XMm * Scale,
                 0f
             );
-
             transform.localPosition = worldPos;
         }
-
 
         public void MoveToMm(float xMm, float zMm, bool instant = true)
         {
@@ -86,12 +115,22 @@ namespace LatheTrainer.Core
             UpdateWorldPosition();
         }
 
-        public void MoveToPark(bool instant = true)
+        public void ApplyDeltaMm(float dXMm, float dZMm)
         {
-            // bezpieczne parkowanie: w dół i w prawo (dostosuj do swoich potrzeb)
-            MoveToMm(xMm: Limits.XMinMm, zMm: Limits.ZMaxMm, instant: true);
+            float oldX = XMm;
+            float oldZ = ZMm;
+
+            XMm += dXMm;
+            ZMm += dZMm;
+
+            ClampToLimits();
+            UpdateWorldPosition();
+
+            Debug.Log($"[ToolPos] ΔX={dXMm:0.###} ΔZ={dZMm:0.###} | X:{oldX:0.###}->{XMm:0.###}  Z:{oldZ:0.###}->{ZMm:0.###}");
         }
 
-        private bool _inputEnabled = true;
+
+
+
     }
 }

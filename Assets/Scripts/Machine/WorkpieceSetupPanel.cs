@@ -29,7 +29,7 @@ namespace LatheTrainer.UI
                 Debug.LogError("WorkpieceSetupPanel: brak przypisanej referencji lathe");
                 return;
             }
-
+           
             float dMm = ParseOrDefault(diameterInput, 100f);
             float lMm = ParseOrDefault(lengthInput, 150f);
 

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using UnityEngine.EventSystems;
 
 namespace LatheTrainer.UI
 {
     public class SpindleFeedPanel : MonoBehaviour
     {
+        public enum FeedMode { Jog, Rapid }
+
         [Header("Wskaźniki")]
         public TMP_Text spindleDisplay;
         public TMP_Text feedDisplay;
@@ -15,15 +15,23 @@ namespace LatheTrainer.UI
         public RectTransform spindleKnob;
         public RectTransform feedKnob;
 
-        [Header("Zakresy wartości")]
+        [Header("Zakresy RPM")]
         public int spindleMinRpm = 0;
-        public int spindleMaxRpm = 2000;
+        public int spindleMaxRpm = 2500;
 
-        public float feedMin = 0.05f;   // mm na obrót
-        public float feedMax = 0.5f;
+        [Header("Jog feed (mm/obr)")]
+        public float jogFeedMin = 0.0f;
+        public float jogFeedMax = 0.5f;
+
+        [Header("Rapid feed (mm/min)")]
+        public float rapidMin = 0f;
+        public float rapidMax = 10000f;
+
+        [Header("Tryb posuwu (UI/sterowanie)")]
+        public FeedMode feedMode = FeedMode.Jog;
 
         [Header("Stan wewnętrzny (0..1)")]
-        [Range(0f, 1f)] public float spindleValue = 0.3f; // pozycja pokrętła
+        [Range(0f, 1f)] public float spindleValue = 0.3f;
         [Range(0f, 1f)] public float feedValue = 0.3f;
 
         [Header("Kąt obrotu pokrętła")]
@@ -34,17 +42,12 @@ namespace LatheTrainer.UI
         public LatheTrainer.Machine.ChuckSpindleVisual spindleVisual;
 
         private int _lastRpm = -1;
-        private float _lastFeed = -1f;
 
-        private void Start()
-        {
-            UpdateUI();
-        }
+        private void Start() => UpdateUI();
 
         private void Update()
         {
-            // TYMCZASOWE sterowanie z klawiatury,
-            // później zastąpimy sterowaniem myszą:
+            // Tymczasowe sterowanie klawiszami (jak wcześniej):
             if (Input.GetKey(KeyCode.Q))
                 spindleValue = Mathf.Clamp01(spindleValue + Time.deltaTime * 0.2f);
             if (Input.GetKey(KeyCode.A))
@@ -60,28 +63,31 @@ namespace LatheTrainer.UI
 
         private void UpdateUI()
         {
-            // obliczamy rzeczywiste wartości
-            int rpm = Mathf.RoundToInt(Mathf.Lerp(spindleMinRpm, spindleMaxRpm, spindleValue));
-            float feed = Mathf.Lerp(feedMin, feedMax, feedValue);
+            int rpm = GetCurrentRpm();
 
-            // aktualizujemy wskaźniki tekstowe
+            // Feed wyświetlamy zgodnie z aktualnym trybem
+            if (feedMode == FeedMode.Jog)
+            {
+                float f = GetJogFeedMmPerRev();
+                if (feedDisplay != null) feedDisplay.text = f.ToString("0.00"); // mm/obr
+            }
+            else
+            {
+                float v = GetRapidMmPerMin();
+                if (feedDisplay != null) feedDisplay.text = Mathf.RoundToInt(v).ToString(); // mm/min
+            }
+
             if (spindleDisplay != null)
-                spindleDisplay.text = rpm.ToString("0000");  // 4 cyfry
+                spindleDisplay.text = rpm.ToString("0000");
 
-            if (feedDisplay != null)
-                feedDisplay.text = feed.ToString("0.00");    // 0.00 mm/obr
-
-            // obracamy pokrętła
+            // obrót pokręteł
             float spindleAngle = Mathf.Lerp(minAngle, maxAngle, spindleValue);
             float feedAngle = Mathf.Lerp(minAngle, maxAngle, feedValue);
 
-            if (spindleKnob != null)
-                spindleKnob.localEulerAngles = new Vector3(0f, 0f, spindleAngle);
+            if (spindleKnob != null) spindleKnob.localEulerAngles = new Vector3(0f, 0f, spindleAngle);
+            if (feedKnob != null) feedKnob.localEulerAngles = new Vector3(0f, 0f, feedAngle);
 
-            if (feedKnob != null)
-                feedKnob.localEulerAngles = new Vector3(0f, 0f, feedAngle);
-
-            // wysyłamy wartość RPM do maszyny tylko wtedy, gdy faktycznie się zmieniła
+            // wysyłamy wartość RPM do wrzeciona
             if (spindleVisual != null && rpm != _lastRpm)
             {
                 spindleVisual.SetCommandedRpm(rpm);
@@ -89,8 +95,19 @@ namespace LatheTrainer.UI
             }
         }
 
-        // Na przyszłość: tutaj można dodać metody GetCurrentRpm(), GetCurrentFeed()
-        public int GetCurrentRpm() => Mathf.RoundToInt(Mathf.Lerp(spindleMinRpm, spindleMaxRpm, spindleValue));
-        public float GetCurrentFeed() => Mathf.Lerp(feedMin, feedMax, feedValue);
+        public int GetCurrentRpm()
+            => Mathf.RoundToInt(Mathf.Lerp(spindleMinRpm, spindleMaxRpm, spindleValue));
+
+        public float GetJogFeedMmPerRev()
+            => Mathf.Lerp(jogFeedMin, jogFeedMax, feedValue);
+
+        public float GetRapidMmPerMin()
+            => Mathf.Lerp(rapidMin, rapidMax, feedValue);
+
+        public void SetFeedMode(FeedMode mode)
+        {
+            feedMode = mode;
+            UpdateUI();
+        }
     }
 }

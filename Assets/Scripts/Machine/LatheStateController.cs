@@ -14,12 +14,33 @@ namespace LatheTrainer.Machine
         public float parkXmm = 0f;
         public float parkZmm = 300f;
 
+        [SerializeField] public LatheButtonsUI latheButtonsUI;
+
+
+       /* public void EnterSafeState()
+        {
+            latheButtonsUI?.PressStopExternal();
+
+            if (toolPosition != null)
+            {
+                toolPosition.SetInputEnabled(false);
+                toolPosition.MoveToMm(parkXmm, parkZmm, instant: true);
+            }
+        }*/
+        
         public void EnterSafeState()
         {
-            if (spindleVisual != null)
+           /* if (spindleVisual != null)
             {
                 spindleVisual.SetCommandedRpm(0f); // zatrzymać wrzeciono
-            }
+            }*/
+
+            if (spindleVisual == null) return;
+            PressStop();
+
+            latheButtonsUI.PressStopExternal();
+
+
 
             if (toolPosition != null)
             {
@@ -27,6 +48,8 @@ namespace LatheTrainer.Machine
                 toolPosition.MoveToMm(parkXmm, parkZmm, instant: true);
             }
         }
+
+
 
         public void ExitSafeState()
         {

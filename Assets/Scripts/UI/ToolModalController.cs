@@ -17,9 +17,9 @@ namespace LatheTrainer.UI
 
         public GameObject SelectedPrefab { get; private set; }
 
-        public event Action<GameObject>? OnConfirmed;
+        public event Action<GameObject> OnConfirmed;
 
-        private ToolButton? _selected;
+        private ToolButton _selected;
 
         private GameObject _lastSelectedPrefab;
 
@@ -105,7 +105,7 @@ namespace LatheTrainer.UI
 
         public GameObject ToolPrefab => toolPrefab;
 
-        private Action<ToolButton>? _onClick;
+        private Action<ToolButton> _onClick;
 
 
         public void Init(Action<ToolButton> onClick)

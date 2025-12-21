@@ -24,6 +24,8 @@ public class ToolChangeAnimator : MonoBehaviour
     [Header("Default tool")]
     [SerializeField] private GameObject defaultToolPrefab;
 
+   
+
     private void Awake()
     {
         if (toolModal != null)
@@ -49,6 +51,8 @@ public class ToolChangeAnimator : MonoBehaviour
             _currentTool.transform.localPosition = Vector3.zero;
             _currentTool.transform.localRotation = Quaternion.identity;
             _currentTool.transform.localScale = Vector3.one;
+
+           
 
             Debug.Log("[ToolChange] Default tool spawned");
         }
@@ -99,6 +103,8 @@ public class ToolChangeAnimator : MonoBehaviour
         _currentTool.transform.localRotation = Quaternion.identity;
         _currentTool.transform.localScale = Vector3.one;
         _currentTool.transform.localPosition = new Vector3(0f, -downOffsetY, 0f);
+
+       
 
         // 5) Przemieszczamy narzędzie w górę do pozycji (Y = 0)
         yield return MoveLocalY(_currentTool.transform, 0f, inTime, absoluteTarget: true);

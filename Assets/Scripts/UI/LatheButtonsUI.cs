@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using LatheTrainer.Core;
 
 
 public class LatheButtonsUI : MonoBehaviour
@@ -50,8 +51,8 @@ public class LatheButtonsUI : MonoBehaviour
     private bool _forceStartBlink; // używane podczas migania sygnalizującego błąd
 
     [Header("Stop blink (deceleration)")]
-    [SerializeField] private float stopBlinkPeriod = 0.25f;
-    [SerializeField] private float stopSpinThreshold = 1.0f; // dopóki currentRpm > 1 — uznajemy, że wrzeciono nadal się
+    //[SerializeField] private float stopBlinkPeriod = 0.25f;
+   // [SerializeField] private float stopSpinThreshold = 1.0f; // dopóki currentRpm > 1 — uznajemy, że wrzeciono nadal się
     private float _stopBlinkTimer;
     private bool _stopBlinkState;
 
@@ -82,6 +83,7 @@ public class LatheButtonsUI : MonoBehaviour
 
     private void OnStart()
     {
+        if (LatheSafetyLock.IsLocked) return;
         if (!spindle) return;
 
         bool started = spindle.TryStartSpindle();
@@ -97,6 +99,7 @@ public class LatheButtonsUI : MonoBehaviour
 
     private void OnStop()
     {
+        if (LatheSafetyLock.IsLocked) return;
         if (!spindle) return;
 
         spindle.StopSpindle();
@@ -105,6 +108,7 @@ public class LatheButtonsUI : MonoBehaviour
 
     private void OnReverseToggle()
     {
+        if (LatheSafetyLock.IsLocked) return;
         if (!spindle) return;
 
         // jeżeli przełączanie jest już w toku — ignorujemy kolejne naciśnięcie
@@ -172,6 +176,10 @@ public class LatheButtonsUI : MonoBehaviour
 
     private void Update()
     {
+        if (LatheTrainer.UI.CrashPopupUI.Instance != null && LatheTrainer.UI.CrashPopupUI.Instance.IsOpen)
+            return;
+
+
         if (!spindle || !startLamp) return;
 
         // jeżeli trwa miganie sygnalizujące błąd uruchomienia — nie ingerujemy
@@ -237,5 +245,10 @@ public class LatheButtonsUI : MonoBehaviour
 
     }
 
-    
+    public void RefreshLampsExternal()
+    {
+        ApplyLamps();
+    }
+
+
 }

@@ -16,6 +16,18 @@ namespace LatheTrainer.Core
             zMaxMm: 700f
         );
 
+       
+
+        public enum XMode { RadiusFromCenter, InfeedDepth }
+        [SerializeField] private XMode xMode = XMode.RadiusFromCenter;
+
+        [Tooltip("Minimalna średnica = 10% średnicy początkowej (czyli 5% promienia, ale zgodnie z wymaganiem przyjmujemy 10% średnicy – poniżej zrealizowane w ten sposób)")]
+        //[SerializeField] private float minDiameterPercent = 0.10f; // 10% średnicy
+
+        //[SerializeField] private MachineState machineState;
+        [SerializeField] private float xCenterMm = 0f; // oś wrzeciona w mm
+
+
         private float _dirX, _dirZ, _speed;
         //private bool _moving;
 
@@ -34,6 +46,8 @@ namespace LatheTrainer.Core
 
         private void Update()
         {
+            if (LatheTrainer.UI.CrashPopupUI.Instance != null && LatheTrainer.UI.CrashPopupUI.Instance.IsOpen)
+                return;
 
             float dt = Time.deltaTime;
 
@@ -126,8 +140,10 @@ namespace LatheTrainer.Core
             ClampToLimits();
             UpdateWorldPosition();
 
-            Debug.Log($"[ToolPos] ΔX={dXMm:0.###} ΔZ={dZMm:0.###} | X:{oldX:0.###}->{XMm:0.###}  Z:{oldZ:0.###}->{ZMm:0.###}");
+            //Debug.Log($"[ToolPos] ΔX={dXMm:0.###} ΔZ={dZMm:0.###} | X:{oldX:0.###}->{XMm:0.###}  Z:{oldZ:0.###}->{ZMm:0.###}");
         }
+
+        
 
 
 

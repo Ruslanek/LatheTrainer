@@ -108,7 +108,7 @@ namespace LatheTrainer.Machine
                 speed = (v <= 0f) ? 0f : v / 60f;
             }
 
-            Debug.Log($"[AxisMotion] SpeedCalc mode={currentMode} => {speed:0.###} mm/s");
+           // Debug.Log($"[AxisMotion] SpeedCalc mode={currentMode} => {speed:0.###} mm/s");
             return speed;
         }
 
@@ -120,11 +120,11 @@ namespace LatheTrainer.Machine
             if (_isHoming) return;
             if (!tool) return;
 
-            Debug.Log($"[AxisMotion] dirX={dirX} dirZ={dirZ}  (Up:+X, Right:+Z, Left:-Z)");
+           // Debug.Log($"[AxisMotion] dirX={dirX} dirZ={dirZ}  (Up:+X, Right:+Z, Left:-Z)");
 
 
             float speed = GetCurrentSpeedMmPerSec();
-            Debug.Log($"[AxisMotion] StartMove dirX={dirX} dirZ={dirZ} mode={currentMode} speed={speed:0.###} mm/s");
+            //Debug.Log($"[AxisMotion] StartMove dirX={dirX} dirZ={dirZ} mode={currentMode} speed={speed:0.###} mm/s");
             if (speed <= 0.0001f)
             {
                 Debug.Log("[MOVE] Speed=0 -> ruch zablokowany");

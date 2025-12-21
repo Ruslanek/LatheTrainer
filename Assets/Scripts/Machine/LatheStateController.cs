@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using LatheTrainer.Core;
+using LatheTrainer.UI;
 
 namespace LatheTrainer.Machine
 {
@@ -38,7 +39,7 @@ namespace LatheTrainer.Machine
             if (spindleVisual == null) return;
             PressStop();
 
-            latheButtonsUI.PressStopExternal();
+            //latheButtonsUI.PressStopExternal();
 
 
 
@@ -85,14 +86,35 @@ namespace LatheTrainer.Machine
 
         public void PressStop()
         {
-            if (spindleVisual == null) return;
-            spindleVisual.StopSpindle();
+            if (latheButtonsUI != null)
+                latheButtonsUI.PressStopExternal(); // wykonuje to samo, co przycisk
+            else if (spindleVisual != null)
+                spindleVisual.StopSpindle();
         }
 
         public void PressReverseToggle(bool reverseOn)
         {
             if (spindleVisual == null) return;
             spindleVisual.SetSpinDirection(reverseOn);
+        }
+
+        public void EnterCrashState(string message)
+        {
+            // 1) blokujemy
+            LatheSafetyLock.Lock();
+
+            // 2) zatrzymujemy wszystko i parkujemy
+            EnterSafeState();
+
+            // 3) wyświetlamy okno; po zamknięciu zdejmujemy blokadę i zezwalamy na sterowanie
+            if (CrashPopupUI.Instance != null)
+            {
+                CrashPopupUI.Instance.Show(message, () =>
+                {
+                    ExitSafeState();
+                    LatheSafetyLock.Unlock();
+                });
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ trackSelection = true
 refreshSearchWindowsInPlayMode = false
 pickerAdvancedUI = false
 fetchPreview = true
-defaultFlags = 0
+defaultFlags = 264
 keepOpen = true
 queryFolder = "Assets"
 onBoardingDoNotAskAgain = true
@@ -13,6 +13,9 @@ scopes = {
 	"picker_visibility_flags.00000000" = "0"
 	"picker_item_size.00000000" = "1"
 	"picker_inspector.00000000" = "0"
+	"last_search.66F56946" = "private GameObject _currentTool"
+	"OpenInspectorPreview.66F56946" = "0"
+	"currentGroup.66F56946" = "asset"
 }
 providers = {
 	asset = {
@@ -69,6 +72,14 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	" private GameObject _currentTool"
+	"OnConfirmed"
+	"Default tool spawned"
+	"p: dir=ManualMode Default tool spawned"
+	"p: dir=ManualMode OnWorkpieceContactStay"
+	"p: dir=\"ManualMode\" "
+	""
+	"OnWorkpieceContactStay"
 ]
 searchItemFavorites = [
 ]

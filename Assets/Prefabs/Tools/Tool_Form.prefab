@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7671779663990710485}
   - component: {fileID: 5029466185277880080}
   - component: {fileID: 683223035651023208}
-  m_Layer: 0
+  - component: {fileID: 7062922311760500501}
+  m_Layer: 7
   m_Name: Insert
-  m_TagString: Untagged
+  m_TagString: ToolTip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,6 +152,23 @@ PolygonCollider2D:
       - {x: 0.05, y: -0.08660254}
       - {x: 0.08660254, y: -0.05}
   m_UseDelaunayMesh: 1
+--- !u!114 &7062922311760500501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071451173775118962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27250c4df30a9634d82bc0f8daf19e48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LatheTrainer.Machine.ToolCutProfile
+  shape: 2
+  tipRadiusMm: 0.8
+  toolAboveWorkpiece: 1
+  machinedFillColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  machinedFillThicknessPx: 4
 --- !u!1 &5692857159964253833
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +180,7 @@ GameObject:
   - component: {fileID: 4388435059786919391}
   - component: {fileID: 6739060198971195300}
   - component: {fileID: 3826159303821425204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -298,7 +316,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6590431237460719732}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tool_Form
   m_TagString: Untagged
   m_Icon: {fileID: 0}

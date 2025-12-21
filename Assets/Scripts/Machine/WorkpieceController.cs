@@ -39,9 +39,11 @@ namespace LatheTrainer.Machine
         [SerializeField] private float defaultDiameterMm = 100f;
         [SerializeField] private float defaultLengthMm = 150f;
 
+        [SerializeField] private WorkpieceMachiningTexture machining;
+
         private void Awake()
         {
-           
+
             if (chuckStatic) _chuckBaseScale = chuckStatic.localScale;
             if (workpieceRenderer) _wpBaseScale = workpieceRenderer.transform.localScale;
         }
@@ -93,8 +95,8 @@ namespace LatheTrainer.Machine
             float wpKDia = workpieceDiameterU / Mathf.Max(0.0001f, baseWorkpieceDiameterUnits);
             float wpKLen = workpieceLengthU / Mathf.Max(0.0001f, baseWorkpieceLengthUnits);
 
-           // Debug.Log($"_wpBaseScale={_wpBaseScale} baseDia={baseWorkpieceDiameterUnits} baseLen={baseWorkpieceLengthUnits}");
-           // Debug.Log($"wpKDia={wpKDia:F4} wpKLen={wpKLen:F4}");
+            // Debug.Log($"_wpBaseScale={_wpBaseScale} baseDia={baseWorkpieceDiameterUnits} baseLen={baseWorkpieceLengthUnits}");
+            // Debug.Log($"wpKDia={wpKDia:F4} wpKLen={wpKLen:F4}");
 
 
             workpieceRenderer.transform.localScale =
@@ -129,7 +131,7 @@ namespace LatheTrainer.Machine
             float leftFaceOfWorkpiece = workpieceRenderer.bounds.min.x;
             float gapCheck = (leftFaceOfWorkpiece - chuckFaceX) * xDir; // normalizujemy względem kierunku
 
-           // Debug.Log($"gap target={gapU:F4}, gap actual={gapCheck:F4}, halfLenWorld={halfLenWorld:F4}");
+            // Debug.Log($"gap target={gapU:F4}, gap actual={gapCheck:F4}, halfLenWorld={halfLenWorld:F4}");
 
             var wpPos = workpieceRenderer.transform.position;
             wpPos.x = wpCenterX;
@@ -175,6 +177,9 @@ namespace LatheTrainer.Machine
             {
                 Debug.LogWarning("WorkpieceController: chuckVisual nie jest przypisany");
             }
+
+            if (machining != null)
+                machining.TryInitRuntimeTexture();
         }
 
         public void ApplyParams(WorkpieceParams p)
@@ -197,7 +202,7 @@ namespace LatheTrainer.Machine
 
             _wpBaseScale = workpieceRenderer.transform.localScale;
 
-           // Debug.Log($"[Base WP] baseLen={baseWorkpieceLengthUnits:F4}, baseDia={baseWorkpieceDiameterUnits:F4}, baseScale={_wpBaseScale}");
+            // Debug.Log($"[Base WP] baseLen={baseWorkpieceLengthUnits:F4}, baseDia={baseWorkpieceDiameterUnits:F4}, baseScale={_wpBaseScale}");
         }
     }
 }

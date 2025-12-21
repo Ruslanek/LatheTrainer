@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7671779663990710485}
   - component: {fileID: 5029466185277880080}
   - component: {fileID: 8098836647709319700}
-  m_Layer: 0
+  - component: {fileID: 3364072418345911810}
+  m_Layer: 7
   m_Name: Insert
-  m_TagString: Untagged
+  m_TagString: ToolTip
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -82,12 +83,12 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -4823406785204802206, guid: 4bb5a1fdf0861f54eb205b7ba0daa72e, type: 3}
   m_Color: {r: 1, g: 0.8156863, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 19.2, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -122,22 +123,39 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.001175493, y: 0.002015233}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.28, y: 1.28}
+    newSize: {x: 19.2, y: 10.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.2949111, y: 1.2976544}
   m_EdgeRadius: 0
+--- !u!114 &3364072418345911810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071451173775118962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27250c4df30a9634d82bc0f8daf19e48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LatheTrainer.Machine.ToolCutProfile
+  shape: 1
+  tipRadiusMm: 0.8
+  toolAboveWorkpiece: 1
+  machinedFillColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+  machinedFillThicknessPx: 4
 --- !u!1 &5692857159964253833
 GameObject:
   m_ObjectHideFlags: 0
@@ -149,9 +167,9 @@ GameObject:
   - component: {fileID: 4388435059786919391}
   - component: {fileID: 6739060198971195300}
   - component: {fileID: 3826159303821425204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Holder
-  m_TagString: Untagged
+  m_TagString: ToolBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -260,7 +278,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -285,7 +303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6590431237460719732}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tool_TurningRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

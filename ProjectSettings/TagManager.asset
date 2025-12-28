@@ -6,6 +6,8 @@ TagManager:
   tags:
   - ToolTip
   - ToolBody
+  - ChuckHazard
+  - Chip
   layers:
   - Default
   - TransparentFX

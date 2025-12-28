@@ -1,4 +1,6 @@
-﻿namespace LatheTrainer.Core
+﻿using LatheTrainer.Machine;
+
+namespace LatheTrainer.Core
 {
     /// <summary>
     /// Przedmiot obrabiany (walec początkowy).

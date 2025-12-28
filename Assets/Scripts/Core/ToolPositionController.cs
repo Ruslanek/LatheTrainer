@@ -103,6 +103,7 @@ namespace LatheTrainer.Core
             ZMm += deltaZmm;
             ClampToLimits();
             UpdateWorldPosition();
+
         }
 
         private void ClampToLimits()
@@ -142,11 +143,6 @@ namespace LatheTrainer.Core
 
             //Debug.Log($"[ToolPos] ΔX={dXMm:0.###} ΔZ={dZMm:0.###} | X:{oldX:0.###}->{XMm:0.###}  Z:{oldZ:0.###}->{ZMm:0.###}");
         }
-
-        
-
-
-
 
     }
 }

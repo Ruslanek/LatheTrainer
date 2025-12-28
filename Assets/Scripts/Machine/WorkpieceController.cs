@@ -35,27 +35,57 @@ namespace LatheTrainer.Machine
         [SerializeField] private ChuckSpindleVisual chuckVisual;
 
         [Header("Domyślna detal przy starcie")]
-        [SerializeField] private MaterialType defaultMaterial = MaterialType.Steel;
+        [SerializeField] private MaterialType defaultMaterial = MaterialType.Aluminium;
         [SerializeField] private float defaultDiameterMm = 100f;
         [SerializeField] private float defaultLengthMm = 150f;
 
         [SerializeField] private WorkpieceMachiningTexture machining;
 
+        //public SpriteRenderer workpieceRenderer;
+
+        //[SerializeField] private MaterialColorConfig materialColors;
+
+        public MaterialType CurrentMaterialType { get; private set; } = MaterialType.Stal;
+        public Color CurrentMaterialColor { get; private set; } = Color.white;
+        public void SetMaterial(MaterialType type)
+        {
+            CurrentMaterialType = type;
+            CurrentMaterialColor = materialColors != null ? materialColors.GetColor(type) : Color.white;
+
+            if (workpieceRenderer)
+                workpieceRenderer.color = CurrentMaterialColor;
+        }
+
         private void Awake()
         {
-
             if (chuckStatic) _chuckBaseScale = chuckStatic.localScale;
-            if (workpieceRenderer) _wpBaseScale = workpieceRenderer.transform.localScale;
+            if (workpieceRenderer)
+            {
+                _wpBaseScale = workpieceRenderer.transform.localScale;
+
+                // BAZA = rozmiar sprite’a w jednostkach lokalnych przy scale = 1
+                var sb = workpieceRenderer.sprite.bounds;
+                baseWorkpieceLengthUnits = sb.size.x;
+                baseWorkpieceDiameterUnits = sb.size.y;
+            }
         }
 
         private void Start()
         {
             ApplyFromMm(defaultMaterial, defaultDiameterMm, defaultLengthMm);
+
         }
 
         // ====== wejście w milimetrach ======
         public void ApplyFromMm(MaterialType material, float diameterMm, float lengthMm)
         {
+            // ✅ zapisaliśmy wartość nominalną w machining (przed przeliczeniami i przed TryInitRuntimeTexture)
+            if (machining != null)
+            {
+                machining.SetWorkpieceNominal(diameterMm, lengthMm);
+                machining.SetMaterialName(material.ToString());
+            }
+
             float workpieceDiameterU = diameterMm * unitsPerMm;
             float workpieceLengthU = lengthMm * unitsPerMm;
 
@@ -88,7 +118,7 @@ namespace LatheTrainer.Machine
                 chuckThicknessU = chuckRenderer.bounds.size.x;
             else
                 chuckThicknessU = Mathf.Abs(_chuckBaseScale.x); // wariant zapasowy, jeśli renderer nie jest przypisany
-            CaptureWorkpieceBaseUnits();
+            //CaptureWorkpieceBaseUnits();
 
 
             // 3) skalowanie detalu (X = długość, Y = średnica)
@@ -138,32 +168,6 @@ namespace LatheTrainer.Machine
             workpieceRenderer.transform.position = wpPos;
 
 
-            /* //  float faceX = chuckFace.position.x;
-
-             // jeśli detal znajduje się po prawej stronie
-             float chuckFaceX = chuckCenterX + xDir * (chuckThicknessU * 0.5f);
-             // float wpCenterX = chuckFaceX + xDir * (gapU + workpieceLengthU * 0.5f);
-
-
-
-             Debug.Log($"gapU(world)={gapU:F4}, workpieceLengthU={workpieceLengthU:F4}");
-             Debug.Log($"workpieceRenderer.lossyScale={workpieceRenderer.transform.lossyScale}");
-             Debug.Log($"workpiece bounds.size.x(world)={workpieceRenderer.bounds.size.x:F4}");
-
-             //float wpCenterX = chuckFaceX +gapU+ (xDir * (workpieceLengthU * 0.5f));
-             float wpCenterX = chuckFaceX + (xDir * gapU) + (xDir * (workpieceLengthU * 0.5f));
-
-
-             var wpPos = workpieceRenderer.transform.position;
-             wpPos.x = wpCenterX;
-             workpieceRenderer.transform.position = wpPos;*/
-
-            //Debug.Log($"APPLY: faceX={faceX:F3} chuckThickness={chuckThicknessU:F3} chuckCenterX={chuckCenterX:F3}  gapU={gapU:F3}");
-
-            //Debug.Log($"[WP] ApplyUnits: diameterMm? (raw not here), workpieceDiameterU={workpieceDiameterU:F4}");
-            // Debug.Log($"[WP] workpieceSprite.bounds.size.y (world)={workpieceRenderer.bounds.size.y:F4}");
-            // Debug.Log($"[WP] baseWorkpieceDiameterUnits={baseWorkpieceDiameterUnits:F4}, unitsPerMm={unitsPerMm:F6}");
-
             // 5)  uruchomienie animacji zaciskania szczęk dla wybranego detalu
             if (chuckVisual != null)
             {
@@ -185,7 +189,8 @@ namespace LatheTrainer.Machine
         public void ApplyParams(WorkpieceParams p)
         {
 
-
+            if (machining != null)
+                machining.SetWorkpieceNominal(p.DiameterMm, p.LengthMm);
             // stara ścieżka: wejście w milimetrach
             ApplyFromMm(p.Material, p.DiameterMm, p.LengthMm);
         }

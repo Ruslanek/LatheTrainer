@@ -1,6 +1,12 @@
-public enum MaterialType
+namespace LatheTrainer.Machine
 {
-    Steel,
-    Aluminium,
-    Brass
+
+
+
+    public enum MaterialType
+    {
+        Stal,
+        Aluminium,
+        Mosi¹dz
+    }
 }

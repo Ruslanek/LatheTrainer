@@ -10,13 +10,13 @@ namespace LatheTrainer.UI
         public GameObject modalOverlay;
 
         [Header("Modals")]
-        public GameObject machineModal;
+        public GameObject tutotialModal;
         public GameObject workpieceModal;
         public GameObject toolModal;
 
-        public void OpenMachine()
+        public void OpenTutorial()
         {
-            Open(machineModal);
+            Open(tutotialModal);
         }
 
         public void OpenWorkpiece()
@@ -31,7 +31,7 @@ namespace LatheTrainer.UI
 
         public void CloseAll()
         {
-            if (machineModal) machineModal.SetActive(false);
+            if (tutotialModal) tutotialModal.SetActive(false);
             if (workpieceModal) workpieceModal.SetActive(false);
             if (toolModal) toolModal.SetActive(false);
             if (modalOverlay) modalOverlay.SetActive(false);
@@ -47,7 +47,7 @@ namespace LatheTrainer.UI
 
             if (modalOverlay) modalOverlay.SetActive(true);
 
-            if (machineModal) machineModal.SetActive(false);
+            if (tutotialModal) tutotialModal.SetActive(false);
             if (workpieceModal) workpieceModal.SetActive(false);
             if (toolModal) toolModal.SetActive(false);
 

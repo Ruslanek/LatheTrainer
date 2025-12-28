@@ -10,7 +10,7 @@ namespace LatheTrainer.UI
         public static CrashPopupUI Instance { get; private set; }
 
         [Header("UI")]
-        [SerializeField] private GameObject root;   // CrashPopup (сам объект)
+        [SerializeField] private GameObject root;   // CrashPopup (sam obiekt)
         [SerializeField] private Text messageText;  // Message
         [SerializeField] private Button okButton;   // OkButton
 

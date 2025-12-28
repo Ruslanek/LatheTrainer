@@ -17,7 +17,7 @@ namespace LatheTrainer.Machine
         [SerializeField] private SpindleFeedPanel panel;
 
         [Header("Mode")]
-        [SerializeField] private Mode currentMode = Mode.Jog;
+        [SerializeField] private Mode currentMode = Mode.Rapid;
 
         [Header("Increment (mm)")]
         [SerializeField] private float incrementStepMm = 1f; // 0.1 / 1 / 10
@@ -44,6 +44,10 @@ namespace LatheTrainer.Machine
 
         [SerializeField] private float posEpsMm = 0.2f;
 
+        [Header("SFX")]
+        [SerializeField] private AudioSource sfxMove;
+        [SerializeField] private float sfxMinSpeedToPlay = 0.01f;
+
 
         private bool _isHoming;
         private Coroutine _homeRoutine;
@@ -56,7 +60,13 @@ namespace LatheTrainer.Machine
         public MoveMode CurrentMoveMode => currentMoveMode;
         public float CurrentIncrementStepMm => incrementStepMm;
 
-   
+        [Header("SFX Increment")]
+        [SerializeField] private float sfxIncrementHoldSec = 0.3f;
+
+        private Coroutine _incSfxRoutine;
+        private float _incSfxStopAt;
+
+
 
         public System.Action OnStateChanged;
 
@@ -125,6 +135,20 @@ namespace LatheTrainer.Machine
 
             float speed = GetCurrentSpeedMmPerSec();
             //Debug.Log($"[AxisMotion] StartMove dirX={dirX} dirZ={dirZ} mode={currentMode} speed={speed:0.###} mm/s");
+
+            if (sfxMove)
+            {
+                if (speed > sfxMinSpeedToPlay)
+                {
+                    if (!sfxMove.isPlaying) sfxMove.Play();
+                }
+                else
+                {
+                    if (sfxMove.isPlaying) sfxMove.Stop();
+                }
+            }
+
+
             if (speed <= 0.0001f)
             {
                 Debug.Log("[MOVE] Speed=0 -> ruch zablokowany");
@@ -140,6 +164,9 @@ namespace LatheTrainer.Machine
 
             if (!tool) return;
             tool.StopMove();
+
+            if (sfxMove && sfxMove.isPlaying)
+                sfxMove.Stop();
         }
 
         // Ruch inkrementalny
@@ -159,9 +186,12 @@ namespace LatheTrainer.Machine
 
             float dx = dirX * incrementStepMm;
             float dz = dirZ * incrementStepMm;
-            
+
+            PlayIncrementMoveSfx(speed);
             tool.StepMove(dx, dz);
+
             //Debug.Log($"[Inc] done -> X={tool.XMm:0.###} Z={tool.ZMm:0.###}");
+           
         }
 
 
@@ -198,46 +228,13 @@ namespace LatheTrainer.Machine
 
             tool.StopMove();
 
+            if (sfxMove && sfxMove.isPlaying)
+                sfxMove.Stop();
+
             //Debug.Log("[HOME] Done");
             _isHoming = false;
             _homeRoutine = null;
         }
-
-        /*
-        private IEnumerator HomeRoutine()
-        {
-            _isHoming = true;
-            tool.SetInputEnabled(false);
-
-            SetRapidMode();
-            float speed = GetCurrentSpeedMmPerSec();
-            if (speed <= 0.0001f)
-            {
-                Debug.Log("[HOME] speed=0 -> exit");
-                tool.SetInputEnabled(true);
-                _isHoming = false;
-                yield break;
-            }
-
-            Debug.Log($"[HOME] Start -> X={homeXmm:0.###} Z={homeZmm:0.###} speed={speed:0.###}");
-
-            // 3) X в homeX
-            yield return MoveAxisXTo(homeXmm, speed);
-
-            // 2) Z в homeZ
-            yield return MoveAxisZTo(homeZmm, speed);
-
-            // 3) X в homeX
-            yield return MoveAxisXTo(homeXmm, speed);
-
-            tool.StopMove();
-            tool.SetInputEnabled(true);
-
-            _isHoming = false;
-            _homeRoutine = null;
-
-            Debug.Log("[HOME] Done");
-        }*/
 
         private IEnumerator MoveAxisXTo(float targetX, float speed)
         {
@@ -256,20 +253,6 @@ namespace LatheTrainer.Machine
                 yield return null;
             }
         }
-
-        // Aby podczas procedury HOME przyciski nie zakłócały ruchu:
-        /* public void StartMove(float dirX, float dirZ)
-         {
-             if (_isHoming) return;
-             base.StartMove(dirX, dirZ);
-         }
-
-         public void StepMove(float dirX, float dirZ)
-         {
-             if (_isHoming) return;
-             base.StepMove(dirX, dirZ);
-         }*/
-
 
         private void OnEnable()
         {
@@ -298,12 +281,41 @@ namespace LatheTrainer.Machine
             if (inc10Img) inc10Img.color = (incMode && Mathf.Abs(motion.CurrentIncrementStepMm - 10f) < 0.0001f) ? active : inactive;
         }
 
-       
-
         public bool IsAtHome(float eps = 0.5f)
         {
             if (!tool) return false;
             return Mathf.Abs(tool.XMm - homeXmm) <= eps && Mathf.Abs(tool.ZMm - homeZmm) <= eps;
+        }
+
+        private void PlayIncrementMoveSfx(float speed)
+        {
+            if (!sfxMove) return;
+
+            if (speed <= sfxMinSpeedToPlay)
+            {
+                if (sfxMove.isPlaying) sfxMove.Stop();
+                return;
+            }
+
+            // wydłużamy „okno” odtwarzania
+            _incSfxStopAt = Time.time + sfxIncrementHoldSec;
+
+            if (_incSfxRoutine == null)
+                _incSfxRoutine = StartCoroutine(IncrementSfxRoutine());
+
+            if (!sfxMove.isPlaying)
+                sfxMove.Play();
+        }
+
+        private IEnumerator IncrementSfxRoutine()
+        {
+            while (Time.time < _incSfxStopAt)
+                yield return null;
+
+            if (sfxMove && sfxMove.isPlaying)
+                sfxMove.Stop();
+
+            _incSfxRoutine = null;
         }
     }
 }

@@ -48,6 +48,11 @@ namespace LatheTrainer.Machine
 
         public enum SpinDirection { CW = 1, CCW = -1,  }   // CW/CCW można zamienić miejscami, jeśli zajdzie taka potrzeba
         [SerializeField] private SpinDirection spinDirection = SpinDirection.CW;
+        public SpinDirection CurrentSpinDirection => spinDirection;
+
+        // public enum SpinDirection { CW = 1, CCW = -1 }
+        // [SerializeField] private SpinDirection spinDirection = SpinDirection.CW;
+
 
         [Header("Spin Phases")]
         [SerializeField] private float[] jawPhases = { 0f, 120f, 240f };
@@ -88,12 +93,6 @@ namespace LatheTrainer.Machine
         public float CurrentRpm => currentRpm;
         public float CommandedRpm => commandedRpm;
 
-
-
-
-
-
-
         // ---- state ----
         public ChuckState State { get; private set; } = ChuckState.Idle_NoWorkpiece;
 
@@ -124,11 +123,6 @@ namespace LatheTrainer.Machine
 
         public bool IsClamped => (State == ChuckState.Clamped || State == ChuckState.Spinning);
 
-   
-   
-
-
-
         [Header("Default RPM on start")]
         [SerializeField] private float defaultCommandedRpm = 250f;
 
@@ -155,8 +149,6 @@ namespace LatheTrainer.Machine
 
             bool canSpin = spindleEnabled && (State == ChuckState.Clamped || State == ChuckState.Spinning);
             float targetRpm = canSpin ? commandedRpm : 0f;
-
-
 
             // podczas zaciskania zawsze 0
             if (State == ChuckState.Clamping)
@@ -593,8 +585,6 @@ namespace LatheTrainer.Machine
             }
         }
 
-
-        
         private float WorldToChuckLocalY(float worldDistance)
         {
             if (!chuckRoot) return worldDistance;
@@ -631,31 +621,7 @@ namespace LatheTrainer.Machine
             return heightLocal * 0.5f;
         }
 
-       /* public void SelectWorkpieceFromSprite()
-        {
-            if (!workpieceSprite || !chuckRoot) return;
-
-            float topWorldY = workpieceSprite.bounds.max.y;
-            float botWorldY = workpieceSprite.bounds.min.y;
-
-            var topLocal = chuckRoot.InverseTransformPoint(new Vector3(0f, topWorldY, 0f));
-            var botLocal = chuckRoot.InverseTransformPoint(new Vector3(0f, botWorldY, 0f));
-
-            float D_local = Mathf.Abs(topLocal.y - botLocal.y);
-
-            float jawHalf = GetJawHalfHeightInChuckLocal();
-            float distanceOpen = D_local + jawHalf;
-            float distanceClamped = (D_local * 0.5f) + jawHalf + (jawClearance * 0.5f);
-
-            _openOffset = distanceOpen;
-            _clampedOffset = distanceClamped;
-
-            Debug.Log($"[FromSprite] D_local={D_local:F3} openDist={_openOffset:F3} clampedDist={_clampedOffset:F3}");
-
-            EnterState(ChuckState.Idle_Opened);
-            StartClamp();
-        }*/
-
+      
         private float WorldToJawLocalY(float worldDistance)
         {
             Transform space = JawSpace;
@@ -793,10 +759,6 @@ namespace LatheTrainer.Machine
         {
             spindleEnabled = false;
         }
-
-
-
-
 
     }
 }

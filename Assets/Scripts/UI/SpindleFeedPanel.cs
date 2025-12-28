@@ -28,7 +28,7 @@ namespace LatheTrainer.UI
         public float rapidMax = 10000f;
 
         [Header("Tryb posuwu (UI/sterowanie)")]
-        public FeedMode feedMode = FeedMode.Jog;
+        public FeedMode feedMode = FeedMode.Rapid;
 
         [Header("Stan wewnętrzny (0..1)")]
         [Range(0f, 1f)] public float spindleValue = 0.3f;

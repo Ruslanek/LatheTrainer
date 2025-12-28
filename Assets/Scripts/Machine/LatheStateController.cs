@@ -18,39 +18,19 @@ namespace LatheTrainer.Machine
         [SerializeField] public LatheButtonsUI latheButtonsUI;
 
 
-       /* public void EnterSafeState()
-        {
-            latheButtonsUI?.PressStopExternal();
-
-            if (toolPosition != null)
-            {
-                toolPosition.SetInputEnabled(false);
-                toolPosition.MoveToMm(parkXmm, parkZmm, instant: true);
-            }
-        }*/
-        
         public void EnterSafeState()
         {
-           /* if (spindleVisual != null)
-            {
-                spindleVisual.SetCommandedRpm(0f); // zatrzymać wrzeciono
-            }*/
-
             if (spindleVisual == null) return;
             PressStop();
 
             //latheButtonsUI.PressStopExternal();
 
-
-
             if (toolPosition != null)
             {
                 toolPosition.SetInputEnabled(false);
-                toolPosition.MoveToMm(parkXmm, parkZmm, instant: true);
+               // toolPosition.MoveToMm(parkXmm, parkZmm, instant: true);
             }
         }
-
-
 
         public void ExitSafeState()
         {
@@ -69,9 +49,6 @@ namespace LatheTrainer.Machine
 
         // StartClampAnimation nie jest już potrzebna
 
-
-
-
         public void ApplyWorkpieceMm(MaterialType material, float diameterMm, float lengthMm)
         {
             if (workpieceController != null)
@@ -80,6 +57,7 @@ namespace LatheTrainer.Machine
 
         public bool PressStart()
         {
+            if (LatheSafetyLock.IsLocked) return false;   // blok
             if (spindleVisual == null) return false;
             return spindleVisual.TryStartSpindle();
         }
@@ -94,6 +72,7 @@ namespace LatheTrainer.Machine
 
         public void PressReverseToggle(bool reverseOn)
         {
+            if (LatheSafetyLock.IsLocked) return;         // ✅ blok
             if (spindleVisual == null) return;
             spindleVisual.SetSpinDirection(reverseOn);
         }

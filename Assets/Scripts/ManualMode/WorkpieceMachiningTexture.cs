@@ -4,6 +4,7 @@ using SFB;
 using System;
 using System.Collections;
 using System.IO;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using static LatheTrainer.Machine.ChuckSpindleVisual;
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -1733,7 +1734,8 @@ private void WebGL_DownloadBytes(byte[] data, string fileName, string mimeType)
             Application.OpenURL("file:///" + Path.GetDirectoryName(path));
 #else
     // fallback как было (для других платформ)
-    SaveToPersistentFolder(png, defaultName);
+    //SaveToPersistentFolder(png, defaultName);
+    PngSaver.SaveToPersistentFolder(png, fileName);
 #endif
         }
 

@@ -62,6 +62,9 @@ public class LatheButtonsUI : MonoBehaviour
     private float _decelBlinkTimer;
     private bool _decelBlinkState;
 
+    [SerializeField] private LatheTrainer.Machine.LatheStateController lathe;
+
+
 
 
     private void Awake()
@@ -81,7 +84,7 @@ public class LatheButtonsUI : MonoBehaviour
         ApplyLamps();
     }
 
-    private void OnStart()
+    /*private void OnStart()
     {
         if (LatheSafetyLock.IsLocked) return;
         if (!spindle) return;
@@ -95,8 +98,35 @@ public class LatheButtonsUI : MonoBehaviour
         }
 
         ApplyLamps();
+    }*/
+
+
+    private void OnStart()
+    {
+        if (LatheSafetyLock.IsLocked) return;
+        if (!lathe) return;
+
+        bool started = lathe.PressStart();   
+
+        if (!started)
+        {
+            if (_blinkRoutine != null) StopCoroutine(_blinkRoutine);
+            _blinkRoutine = StartCoroutine(BlinkLamp(startLamp, blinkCount, blinkInterval));
+        }
+
+        ApplyLamps();
     }
 
+    private void OnStop()
+    {
+        if (LatheSafetyLock.IsLocked) return;
+        if (!lathe) return;
+
+        lathe.PressStop();     
+        ApplyLamps();
+    }
+
+    /*
     private void OnStop()
     {
         if (LatheSafetyLock.IsLocked) return;
@@ -104,7 +134,7 @@ public class LatheButtonsUI : MonoBehaviour
 
         spindle.StopSpindle();
         ApplyLamps();
-    }
+    }*/
 
     private void OnReverseToggle()
     {

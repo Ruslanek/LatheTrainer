@@ -187,6 +187,7 @@ namespace LatheTrainer.Machine
  
 
 
+        /*
 #if UNITY_WEBGL && !UNITY_EDITOR
 [DllImport("__Internal")]
 private static extern void DownloadFile(byte[] array, int length, string fileName, string mimeType);
@@ -195,7 +196,7 @@ private void WebGL_DownloadBytes(byte[] data, string fileName, string mimeType)
 {
     DownloadFile(data, data.Length, fileName, mimeType);
 }
-#endif
+#endif*/
 
         // public event System.Action DownloadPngRequested;
 

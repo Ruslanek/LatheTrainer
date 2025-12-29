@@ -124,7 +124,11 @@ namespace LatheTrainer.Machine
         public bool IsClamped => (State == ChuckState.Clamped || State == ChuckState.Spinning);
 
         [Header("Default RPM on start")]
-        [SerializeField] private float defaultCommandedRpm = 250f;
+        [SerializeField] private float defaultCommandedRpm = 350f;
+
+        public bool IsSpinningNow => currentRpm > 0.5f; 
+
+        public bool startLocked;
 
         void Awake()
         {
@@ -750,6 +754,7 @@ namespace LatheTrainer.Machine
 
         public bool TryStartSpindle()
         {
+            if (startLocked) return false;
             if (!IsClamped) return false;   // nie można, dopóki detal nie jest zaciśnięty
             spindleEnabled = true;
             return true;

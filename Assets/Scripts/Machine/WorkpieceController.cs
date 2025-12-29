@@ -175,7 +175,8 @@ namespace LatheTrainer.Machine
 
                 //Debug.Log($"[WP] Clamp start, real diameter world = {realDiameterWorld:F4}");
 
-                chuckVisual.SelectWorkpieceByDiameter(realDiameterWorld);
+                //chuckVisual.SelectWorkpieceByDiameter(realDiameterWorld);
+                StartCoroutine(ClampNextFrame());
             }
             else
             {
@@ -208,6 +209,20 @@ namespace LatheTrainer.Machine
             _wpBaseScale = workpieceRenderer.transform.localScale;
 
             // Debug.Log($"[Base WP] baseLen={baseWorkpieceLengthUnits:F4}, baseDia={baseWorkpieceDiameterUnits:F4}, baseScale={_wpBaseScale}");
+        }
+
+        private System.Collections.IEnumerator ClampNextFrame()
+        {
+            // czekamy, aby Unity zdążyło przeliczyć bounds po zmianie skali/pozycji
+            yield return null;
+            // można nawet zrobić to w ten sposób:
+            // yield return new WaitForEndOfFrame();
+
+            if (chuckVisual != null && workpieceRenderer != null)
+            {
+                float realDiameterWorld = workpieceRenderer.bounds.size.y;
+                chuckVisual.SelectWorkpieceByDiameter(realDiameterWorld);
+            }
         }
     }
 }

@@ -14,8 +14,8 @@ public class PngSaver : MonoBehaviour
 #endif
 
     /// <summary>
-    /// В WebGL: скачивание файла через браузер.
-    /// В остальных платформах: сохранение в Application.persistentDataPath (если нужно).
+    ///  WebGL: przeglądarka pobiera plik
+    /// Na pozostałych platformach: zapis do Application.persistentDataPath (jeśli jest wymagany).
     /// </summary>
     public static void SaveToPersistentFolder(byte[] bytes, string fileName)
     {
@@ -32,12 +32,12 @@ public class PngSaver : MonoBehaviour
             fileName += ".png";
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        // WebGL: браузер скачивает файл
+        //  WebGL: przeglądarka pobiera plik
         SaveFileFromUnity(bytes, bytes.Length, fileName, "image/png");
         Debug.Log($"[PNG] Browser download requested: {fileName}");
 
 #else
-        // Не WebGL: сохраняем в persistentDataPath (или можешь убрать этот блок, если не нужен)
+        // Poza WebGL: zapis do persistentDataPath (blok można usunąć, jeśli nie jest potrzebny)
         try
         {
             string path = Path.Combine(Application.persistentDataPath, fileName);

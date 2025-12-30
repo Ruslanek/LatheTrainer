@@ -117,3 +117,8 @@ Assets/*.unity.meta
 ############################
 Assets/**/*.prefab
 Assets/**/*.prefab.meta
+
+############################
+# Unity folder meta files  #
+############################
+Assets/**/.meta

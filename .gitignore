@@ -58,25 +58,62 @@ Assets/AssetStoreTools*
 crashlytics-build.properties
 
 ############################
-# Media (если ХОЧЕШЬ)     #
-# ❗ Можно убрать, если   #
-# хочешь хранить ассеты  #
+# Media + Meta             #
 ############################
-# Assets/**/*.png
-# Assets/**/*.jpg
-# Assets/**/*.jpeg
-# Assets/**/*.tga
-# Assets/**/*.psd
-# Assets/**/*.svg
-# Assets/**/*.wav
-# Assets/**/*.mp3
-# Assets/**/*.ogg
-# Assets/**/*.aiff
-# Assets/**/*.mp4
-# Assets/**/*.mov
-# Assets/**/*.webm
+Assets/**/*.png
+Assets/**/*.png.meta
+
+Assets/**/*.jpg
+Assets/**/*.jpg.meta
+
+Assets/**/*.jpeg
+Assets/**/*.jpeg.meta
+
+Assets/**/*.tga
+Assets/**/*.tga.meta
+
+Assets/**/*.psd
+Assets/**/*.psd.meta
+
+Assets/**/*.svg
+Assets/**/*.svg.meta
+
+Assets/**/*.wav
+Assets/**/*.wav.meta
+
+Assets/**/*.mp3
+Assets/**/*.mp3.meta
+
+Assets/**/*.ogg
+Assets/**/*.ogg.meta
+
+Assets/**/*.aiff
+Assets/**/*.aiff.meta
+
+Assets/**/*.mp4
+Assets/**/*.mp4.meta
+
+Assets/**/*.mov
+Assets/**/*.mov.meta
+
+Assets/**/*.webm
+Assets/**/*.webm.meta
 
 ############################
 # TMP examples (optional) #
 ############################
 Assets/TextMesh Pro/Examples & Extras/
+
+############################
+# Unity Scenes             #
+############################
+Assets/**/*.unity
+Assets/**/*.unity.meta
+Assets/*.unity
+Assets/*.unity.meta
+
+############################
+# Unity Prefabs            #
+############################
+Assets/**/*.prefab
+Assets/**/*.prefab.meta
